@@ -1,0 +1,42 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Download</title>
+</head>
+<body>
+    <h1>Download Files</h1>
+    <ul id="file-list"></ul>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // app.js
+const fileList = document.getElementById('file-list');
+const storageRef = storage.ref('uploads');
+
+storageRef.listAll().then((res) => {
+    res.items.forEach((itemRef) => {
+        itemRef.getDownloadURL().then((url) => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = url;
+            link.textContent = itemRef.name;
+            link.setAttribute('download', '');
+            listItem.appendChild(link);
+            fileList.appendChild(listItem);
+        }).catch((error) => {
+            console.error('Error getting download URL:', error);
+        });
+    });
+}).catch((error) => {
+    console.error('Error listing files:', error);
+});
+
+    </script>
+</body>
+</html>
